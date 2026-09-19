@@ -63,8 +63,13 @@
           <strong>nur localhost</strong>. Secrets liegen in <code>.env</code> (gitignored).</li>
         <li><strong>Localhost-Bindung:</strong> in <code>.env</code> <code>OC8_HTTP_PORT=127.0.0.1:80</code> und
           <code>OC8_HTTPS_PORT=127.0.0.1:443</code>. Ohne das veröffentlicht Colima Port 80/443 im ganzen LAN.</li>
-        <li><strong>Neustart im Dev-Modus:</strong> <code>docker compose -f docker-compose.yml -f docker-compose.dev.yml up -d</code>
-          (ein nacktes <code>docker compose up</code> startet <em>ohne</em> Dev-Overlay).</li>
+        <li><strong>Compose-Dateien:</strong> <code>COMPOSE_FILE=docker-compose.yml:docker-compose.dev.yml:qmed/compose.qmed.yml</code>
+          in <code>.env</code> — jedes <code>docker compose …</code> lädt damit Dev-Modus und Q-MED-Overlay.
+          <code>quickstart.sh</code> übergibt eigene <code>-f</code>-Flags; danach einmal <code>docker compose up -d</code>.</li>
+        <li><strong>LLM:</strong> Ollama auf dem Mac (Apple-GPU), nicht im Container. <code>OC8_OLLAMA_BASE_URL=http://host.docker.internal:11434</code>,
+          Modell <code>qwen3:30b-a3b</code>. Fallback-Modell via <code>OC8_DEFAULT_MODEL</code> im Overlay. Kein Cloud-Key gesetzt.</li>
+        <li><strong>ACME-Seed angepasst:</strong> Ollama-<code>model_config</code> auf <code>qwen3:30b-a3b</code>, alle 16 ACME-Agents darauf umgehängt
+          (nur DB, nach <code>oc8 seed --reset</code> neu nötig).</li>
         <li class="decision" data-d="dec-localhost-bind">
           <input type="checkbox" class="d-check" aria-label="Entscheidung als gesichtet markieren" />
           <div class="d-body">
@@ -73,6 +78,39 @@
               <span class="d-title">Caddy nur auf 127.0.0.1 binden (über <code>.env</code>)</span>
             </div>
             <p class="d-why">Nach dem ersten Start war der Dev-Login ohne Passwort unter 192.168.2.65 aus dem LAN erreichbar, weil Colimas Portforwarder auf <code>*:80</code> bindet. Das Upstream-Compose liest <code>OC8_HTTP_PORT</code>/<code>OC8_HTTPS_PORT</code>, also reicht <code>127.0.0.1:80</code> in <code>.env</code> und Upstream-Dateien bleiben unverändert. Geprüft: LAN-IPv4 und öffentliche IPv6-Adressen liefern keine Antwort, 127.0.0.1 und ::1 liefern 200.</p>
+            <p class="d-src">Quelle: Session „oc8"</p>
+          </div>
+        </li>
+        <li class="decision" data-d="dec-llm-ollama">
+          <input type="checkbox" class="d-check" aria-label="Entscheidung als gesichtet markieren" />
+          <div class="d-body">
+            <div class="d-head">
+              <span class="d-date">2026-09-19</span>
+              <span class="d-title">Lokales LLM über Ollama statt Anthropic-API oder Claude-Abo</span>
+            </div>
+            <p class="d-why">Die API ist Christoph zu teuer. Ein Claude-Abo lässt sich nicht nutzen: Die Claude-Code-Runtime von oc8 geht über das eigene <code>/llm</code>-Gateway mit API-Key, und Abo-Logins sind laut Anthropic nicht für Fremdtools gedacht. Ollama war schon installiert, kostet nichts und hält die Daten lokal.</p>
+            <p class="d-src">Quelle: Session „oc8"</p>
+          </div>
+        </li>
+        <li class="decision" data-d="dec-qwen-host">
+          <input type="checkbox" class="d-check" aria-label="Entscheidung als gesichtet markieren" />
+          <div class="d-body">
+            <div class="d-head">
+              <span class="d-date">2026-09-19</span>
+              <span class="d-title"><code>qwen3:30b-a3b</code> auf dem Host-Ollama, nicht im Ollama-Container</span>
+            </div>
+            <p class="d-why">Mixture-of-Experts mit ~3B aktiven Parametern, also schnell, und das Modell kann Tools aufrufen. Im Colima-Container gäbe es keine GPU, auf dem Mac läuft es über Metal. Geprüft: Tool-Aufruf über den oc8-ModelRouter in ~4 s, direkt und über den Claude-Fallback.</p>
+            <p class="d-src">Quelle: Session „oc8"</p>
+          </div>
+        </li>
+        <li class="decision" data-d="dec-overlay">
+          <input type="checkbox" class="d-check" aria-label="Entscheidung als gesichtet markieren" />
+          <div class="d-body">
+            <div class="d-head">
+              <span class="d-date">2026-09-19</span>
+              <span class="d-title">Eigenes Compose-Overlay <code>qmed/compose.qmed.yml</code> + <code>COMPOSE_FILE</code> in <code>.env</code></span>
+            </div>
+            <p class="d-why"><code>OC8_DEFAULT_MODEL</code> wird vom Upstream-Compose nicht durchgereicht, der Fallback lief deshalb auf das nicht installierte <code>mistral:latest</code> (404). Ein Overlay statt einer Änderung an <code>docker-compose.yml</code> hält Upstream-Merges sauber. <code>COMPOSE_FILE</code> sorgt nebenbei dafür, dass der Dev-Modus beim Neustart nicht vergessen wird.</p>
             <p class="d-src">Quelle: Session „oc8"</p>
           </div>
         </li>
@@ -167,7 +205,7 @@
 
 <footer>
   Datei: <code>qmed/specs/2026-09-19-setup-fork-und-lokaler-betrieb-design.html</code> ·
-  <!--STAMP-->Stand: 2026-09-19 · 3364519<!--/STAMP--> ·
+  <!--STAMP-->Stand: 2026-09-19 · e35b254<!--/STAMP--> ·
   Zurück zum <a href="index.html">Spec-Wiki</a>.
 </footer>
 

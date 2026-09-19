@@ -15,7 +15,9 @@ erreichbar, Doku-Grundgerüst committet.
 - Laufzeit: Colima (Profil `default`, 6 CPU / 8 GB), kein Docker Desktop installiert.
 - Dev-Modus = Login ohne Passwort → **nur localhost**, nie exponieren.
 - `.env` enthält generierte Secrets, ist gitignored — nie committen.
-- `.env` muss `OC8_HTTP_PORT=127.0.0.1:80` + `OC8_HTTPS_PORT=127.0.0.1:443` enthalten (Colima bindet sonst LAN-weit).
+- `.env` muss `OC8_HTTP_PORT=127.0.0.1:80` + `OC8_HTTPS_PORT=127.0.0.1:443` enthalten (Colima bindet sonst LAN-weit),
+  außerdem `OC8_OLLAMA_BASE_URL`, `OC8_DEFAULT_MODEL`, `COMPOSE_FILE` (siehe `qmed/docs/README.md`).
+- LLM: nur lokal (Ollama `qwen3:30b-a3b` auf dem Host). Kein Anthropic-Key (zu teuer), Claude-Abo in oc8 nicht nutzbar.
 - LGPL: Änderungen an oc8 selbst offenlegen, falls an Dritte verteilt.
 
 ## Key Decisions
@@ -28,8 +30,9 @@ Siehe Entscheidungs-Log in `qmed/specs/2026-09-19-setup-fork-und-lokaler-betrieb
   - [x] HTML-Doc-Wiki unter `qmed/` (Hook-Pfade angepasst), erste Spec + README
   - [x] Quickstart Dev-Modus: 11 Container laufen, http://localhost → 200
   - [x] Caddy auf 127.0.0.1 gebunden (war im LAN offen!), in `.env`
-- Now: [→] Commit auf `qmed`, Push zum Fork
-- Next: ARCHITECTURE.md / AGENTS.md lesen, Erweiterungspunkte identifizieren
+  - [x] Commit e35b254 auf `qmed`, gepusht nach origin
+  - [x] LLM: Host-Ollama + qwen3:30b-a3b, ACME-Agents umgehängt, Overlay für OC8_DEFAULT_MODEL; Tool-Call getestet
+- Now: [→] Ersten echten Agent-Run in der UI testen, dann ARCHITECTURE.md / AGENTS.md lesen, Erweiterungspunkte identifizieren
 - Remaining:
   - [ ] Erste Q-MED-Erweiterung planen (`create_plan`)
 

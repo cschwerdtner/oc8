@@ -1,0 +1,18 @@
+# Q-MED-Overlay: lokale Anpassungen ohne Upstream-Dateien zu ändern.
+# Wird über COMPOSE_FILE in .env automatisch geladen (nach docker-compose.yml
+# und docker-compose.dev.yml). quickstart.sh übergibt eigene -f-Flags und
+# ignoriert dieses Overlay — danach einmal `docker compose up -d` ausführen.
+#
+# OC8_DEFAULT_MODEL: Fallback-Modell, wenn kein Cloud-Key gesetzt ist (Claude/
+# GPT-Konfigurationen fallen dann auf Ollama zurück). Upstream-Default ist
+# mistral:latest, das lokal nicht installiert ist.
+x-qmed-env: &qmed-env
+  OC8_DEFAULT_MODEL: ${OC8_DEFAULT_MODEL:-qwen3:30b-a3b}
+
+services:
+  migrate:             { environment: *qmed-env }
+  runtime-provisioner: { environment: *qmed-env }
+  backend:             { environment: *qmed-env }
+  worker:              { environment: *qmed-env }
+  ingestion-worker:    { environment: *qmed-env }
+  scheduler:           { environment: *qmed-env }
