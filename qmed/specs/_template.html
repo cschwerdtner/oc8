@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<!--
+  Kopiervorlage für neue Specs.
+  Schritte:
+    1. Datei umbenennen: YYYY-MM-DD-<modul>-<thema>-design.html
+    2. #spec-meta JSON ausfüllen (titel, modul, status, datum, beschreibung)
+    3. <title> anpassen
+    4. data-spec-key am <body> auf den Dateinamen ohne Endung setzen
+    5. Header-h1 und -p anpassen
+    6. Inhalt in section.card-Blöcke füllen
+    7. Footer-Dateiname anpassen
+
+  Hinweis für Specs in einem Modul-Unterordner (z. B. thoughts/shared/aero/):
+    - href und src auf "../specs/assets/spec.css" / "../specs/assets/spec.js" ändern
+-->
+<html lang="de">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>TITEL — Design</title>
+
+<!-- Single Source für die Index-Generierung -->
+<script type="application/json" id="spec-meta">
+{
+  "titel": "TITEL",
+  "modul": "MODUL",
+  "status": "offen",
+  "datum": "YYYY-MM-DD",
+  "beschreibung": "Kurze Beschreibung (1–2 Sätze) für die Index-Kachel.",
+  "footnote": ""
+}
+</script>
+
+<link rel="stylesheet" href="assets/spec.css" />
+</head>
+<body data-spec-key="DATEINAME-OHNE-ENDUNG">
+
+<header class="page">
+  <div class="inner">
+    <a class="back" href="index.html">← Spec-Wiki</a>
+    <h1>TITEL</h1>
+    <p>Kurze Beschreibung des Themas dieser Spec.</p>
+    <div class="meta">
+      <span><strong>Datei:</strong> <code>thoughts/shared/specs/DATEINAME.html</code></span>
+      <span><strong>Status:</strong> offen</span>
+      <span><strong>Quelle:</strong> Session „…"</span>
+    </div>
+  </div>
+</header>
+
+<main>
+
+  <!-- ===================================================================== -->
+  <section class="card full">
+    <h2>1 · Ziel &amp; Kontext</h2>
+    <div class="body">
+      <p>Was soll gelöst werden? Warum jetzt?</p>
+    </div>
+  </section>
+
+  <!-- ===================================================================== -->
+  <section class="card">
+    <h2>2 · Lösung</h2>
+    <div class="body">
+      <p>Wie wird es gelöst? Architektur, Datenmodell, UI-Skizze.</p>
+    </div>
+  </section>
+
+  <!-- ===================================================================== -->
+  <section class="card full">
+    <h2>Entscheidungs-Log · committet — der Record</h2>
+    <div class="body">
+      <p style="color:var(--muted);font-size:12px;margin-top:0">
+        Von Claude gepflegt. Entscheidungen aus dieser und künftigen Sessions stehen hier
+        dauerhaft (in Git), nicht im Browser. Das Häkchen links ist dein persönlicher
+        „gesichtet"-Marker (nur dieser Browser).
+      </p>
+      <ul class="decisions">
+        <!-- Beispiel-Eintrag — löschen oder befüllen:
+        <li class="decision" data-d="dec-beispiel">
+          <input type="checkbox" class="d-check" aria-label="Entscheidung als gesichtet markieren" />
+          <div class="d-body">
+            <div class="d-head">
+              <span class="d-date">YYYY-MM-DD</span>
+              <span class="d-title">Entscheidungs-Titel</span>
+            </div>
+            <p class="d-why">Begründung: Warum wurde diese Entscheidung so getroffen?</p>
+            <p class="d-src">Quelle: Session „…"</p>
+          </div>
+        </li>
+        -->
+      </ul>
+    </div>
+  </section>
+
+</main>
+
+<!-- Sticky-Notiz-Button + Drawer (localStorage, nicht committet) -->
+<button class="note-fab" id="note-fab" aria-label="Notizen öffnen" aria-expanded="false" aria-controls="note-drawer">
+  ✎ Notizen
+</button>
+
+<aside class="note-drawer" id="note-drawer" aria-label="Persönliche Notizen" aria-hidden="true">
+  <header>
+    <strong>Persönliche Notizen</strong>
+    <button class="close" id="note-close" aria-label="Notizen schließen">×</button>
+  </header>
+  <div class="content">
+    <p class="hint">Nur dieser Browser (localStorage) — wird <strong>nicht</strong> committet.</p>
+    <textarea data-k="freitext" placeholder="Gedanken-Kritzeleien während du liest…"></textarea>
+
+    <h4>Entscheidung einreichen</h4>
+    <div class="mini">
+      <input type="text" data-k="d-title" placeholder="Entscheidung (Titel)" />
+      <input type="text" data-k="d-why" placeholder="Warum?" />
+    </div>
+    <button class="act" id="copy-decision">→ Markdown kopieren</button>
+    <span class="hint" id="copy-feedback"></span>
+    <p class="hint">Kopieren, mir im Chat geben → ich schreibe es ins committete Log.</p>
+  </div>
+</aside>
+
+<footer>
+  Datei: <code>thoughts/shared/specs/DATEINAME.html</code> ·
+  <!--STAMP-->Stand: YYYY-MM-DD (noch kein Hook-Stamp)<!--/STAMP--> ·
+  Zurück zum <a href="index.html">Spec-Wiki</a>.
+</footer>
+
+<script src="assets/spec.js" defer></script>
+
+</body>
+</html>

@@ -1,0 +1,63 @@
+#!/usr/bin/env bash
+# pre-commit: stempelt gestagte Spec-HTMLs (Stand-Datum + Hash) und regeneriert
+# den Index. Fail-open: Tooling-Fehler -> Warnung, Commit läuft trotzdem.
+# Chirurgisch: re-added NUR die Hook-eigenen Dateien, nie `git add -A`.
+set -u
+REPO_ROOT="$(git rev-parse --show-toplevel)"
+CFG="$REPO_ROOT/.spec-wiki.json"
+[ -f "$CFG" ] || exit 0
+command -v python3 >/dev/null 2>&1 || { echo "[spec-wiki] python3 fehlt, skip"; exit 0; }
+
+# Spec-Root-Präfixe aus der Config (scan[]) lesen (bash 3.2-kompatibel, kein mapfile)
+IFS=$'\n' read -r -d '' -a SCAN < <(python3 -c "import json;print('\n'.join(json.load(open('$CFG'))['scan']))" 2>/dev/null; printf '\0') || true
+[ ${#SCAN[@]} -eq 0 ] && exit 0
+
+staged_specs=()
+while IFS= read -r f; do
+  for pre in "${SCAN[@]}"; do
+    case "$f" in
+      "$pre"/*.html)
+        case "$f" in */assets/*|*/index.html|*/_template.html) ;; *) staged_specs+=("$f");; esac ;;
+    esac
+  done
+done < <(git diff --cached --name-only --diff-filter=ACM)
+
+[ ${#staged_specs[@]} -eq 0 ] && exit 0
+
+# Stempeln + gezielt re-adden
+for f in "${staged_specs[@]}"; do
+  python3 "$REPO_ROOT/qmed/scripts/spec_wiki.py" stamp "$REPO_ROOT/$f" --config "$CFG" \
+    && git add "$f" || echo "[spec-wiki] stamp fehlgeschlagen: $f (skip)"
+done
+
+# Index regenerieren + nur den Index re-adden, falls geändert
+IDX="$(python3 -c "import json;print(json.load(open('$CFG'))['index'])" 2>/dev/null)"
+if python3 "$REPO_ROOT/qmed/scripts/spec_wiki.py" build-index --config "$CFG"; then
+  git add "$IDX" 2>/dev/null || true
+else
+  echo "[spec-wiki] build-index fehlgeschlagen (skip)"
+fi
+
+# ---- Doku-Wiki: gestagte docs/*.md → HTML + Index regenerieren ----
+# Gleiche Fail-open/chirurgisch-Philosophie: re-added NUR die HTMLs zu den
+# gestagten .md plus den Doku-Index, nie blanket `git add`.
+DCFG="$REPO_ROOT/.doc-wiki.json"
+if [ -f "$DCFG" ] && [ -f "$REPO_ROOT/qmed/scripts/doc_wiki.py" ]; then
+  staged_md=()
+  while IFS= read -r f; do
+    case "$f" in qmed/docs/*.md) staged_md+=("$f");; esac
+  done < <(git diff --cached --name-only --diff-filter=ACM)
+  if [ ${#staged_md[@]} -gt 0 ]; then
+    if python3 "$REPO_ROOT/qmed/scripts/doc_wiki.py" build --config "$DCFG"; then
+      for f in "${staged_md[@]}"; do
+        html="${f%.md}.html"
+        [ -f "$REPO_ROOT/$html" ] && git add "$html" 2>/dev/null || true
+      done
+      DIDX="$(python3 -c "import json;print(json.load(open('$DCFG'))['index'])" 2>/dev/null)"
+      [ -n "$DIDX" ] && git add "$DIDX" 2>/dev/null || true
+    else
+      echo "[doc-wiki] build fehlgeschlagen (skip)"
+    fi
+  fi
+fi
+exit 0

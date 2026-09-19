@@ -1,0 +1,6 @@
+{ "project": "oc8 (Q-MED)",
+  "index": "qmed/specs/index.html",
+  "scan": ["qmed/specs"],
+  "assets": "qmed/specs/assets",
+  "doc_index_href": "../docs/index.html",
+  "module_order": ["Setup & Betrieb", "Erweiterungen", "Integration Q-MED"] }

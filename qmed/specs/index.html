@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>oc8 (Q-MED) — Spec-Wiki</title>
+<link rel="stylesheet" href="assets/spec.css" />
+<script src="assets/spec.js" defer></script>
+</head>
+<body>
+
+<header class="page">
+  <div class="inner">
+    <nav class="wiki-switch" aria-label="Wiki wechseln">
+      <span class="active">Spec-Wiki</span>
+      <a href="../docs/index.html">→ Doku-Wiki</a>
+    </nav>
+    <h1>oc8 (Q-MED) · Spec-Wiki</h1>
+    <p>
+      Zentrale Übersicht aller Spezifikationen für oc8 (Q-MED).
+      Von hier verzweigt sich das Wiki in jede Modul- und Feature-Spec.
+      Jede neue Spec wird als HTML angelegt und hier verlinkt.
+    </p>
+    <div class="meta">
+      <span><strong>Repo:</strong> oc8 (Q-MED)</span>
+      <span><strong>Index:</strong> <code>qmed/specs/index.html</code></span>
+      <span><strong>Stand:</strong> 2026-09-19</span>
+      <span><strong>Konvention:</strong> Specs als HTML, nicht Markdown</span>
+    </div>
+  </div>
+</header>
+
+<main>
+
+  <!-- =========================================================== -->
+  <section class="card full">
+    <h2>Konvention · Wie Specs in diesem Projekt geschrieben werden</h2>
+    <div class="body">
+      <p>
+        Specs werden in oc8 (Q-MED) als <strong>HTML-Dokumente</strong> gepflegt — nicht als
+        Markdown. HTML erlaubt reiches Layout, interaktive Mockups, Frozen-Simulatoren,
+        Status-Chips und Persistenz über <code>localStorage</code>. Diese Index-Seite ist der
+        einzige Einstiegspunkt und verzweigt in jede Detail-Spec.
+      </p>
+
+      <div class="convention">
+        <div class="conv-item">
+          <div class="title">Ein Index, viele Specs</div>
+          <div class="why">
+            Der generierte <code>index.html</code> ist die Source of Truth für die
+            Spec-Landschaft. Jede neue Spec — egal in welchem Unterordner — wird hier
+            verlinkt, sonst existiert sie für das Team nicht.
+          </div>
+        </div>
+        <div class="conv-item">
+          <div class="title">Modul-Unterordner sind erlaubt</div>
+          <div class="why">
+            Specs dürfen direkt im Spec-Ordner oder in einem Modul-Unterordner liegen.
+            Wichtig ist der Eintrag im Index (über <code>#spec-meta</code>), nicht der Pfad.
+          </div>
+        </div>
+        <div class="conv-item">
+          <div class="title">Visueller Stil bleibt konsistent</div>
+          <div class="why">
+            Dunkler Header-Gradient <code>#1e293b → #0f172a</code>, weiße Karten mit
+            <code>--border</code> und <code>--shadow</code>, dieselben CSS-Variablen wie
+            in dieser Datei. Copy-Paste aus einer existierenden Spec als Skelett.
+          </div>
+        </div>
+        <div class="conv-item">
+          <div class="title">Lebendig &gt; statisch</div>
+          <div class="why">
+            Wo sinnvoll: Checkboxen mit <code>localStorage</code>, Frozen-Simulator,
+            klickbare Mockups, Status-Diagramme. Nicht jede Spec braucht das — aber
+            die Möglichkeit steht offen, im Gegensatz zu Markdown.
+          </div>
+        </div>
+        <div class="conv-item">
+          <div class="title">Pläne bleiben Markdown</div>
+          <div class="why">
+            Implementations-Pläne bleiben Markdown — Pläne sind kurzlebig
+            und prozessual. Specs (Architektur, Datenmodell, UI-Konzept) sind dauerhaft
+            und gehören ins HTML-Wiki.
+          </div>
+        </div>
+        <div class="conv-item">
+          <div class="title">Footer mit Pfad und Stand</div>
+          <div class="why">
+            Jede Spec hat unten einen Footer mit Datei-Pfad und Datum, damit beim
+            Öffnen klar ist, wo das Dokument liegt und wie aktuell es ist.
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- =========================================================== -->
+  <section class="card full">
+    <h2>Specs</h2>
+    <div class="body">
+      <div class="sort-bar" id="spec-sort" role="group" aria-label="Sortierung">
+        <span class="sort-label">Sortieren:</span>
+        <button type="button" data-sort="module" aria-pressed="true">Nach Modul</button>
+        <button type="button" data-sort="datum-desc" aria-pressed="false">Neueste zuerst</button>
+        <button type="button" data-sort="datum-asc" aria-pressed="false">Älteste zuerst</button>
+      </div>
+      <div class="modules-host">
+<div class="module-group">
+  <h3>Setup &amp; Betrieb</h3>
+  <div class="specs-grid">
+<a class="spec-tile" href="2026-09-19-setup-fork-und-lokaler-betrieb-design.html" data-datum="2026-09-19" data-mtime="1789806023" data-modul="Setup &amp; Betrieb" data-titel="fork &amp; lokaler betrieb">
+  <div class="tile-head">
+    <span class="tile-title">Fork &amp; lokaler Betrieb</span>
+    <span class="tile-chips">
+      <span class="badge good">umgesetzt</span>
+      <span class="badge date" title="Datum">2026-09-19</span>
+      <span class="badge modul" title="Modul">Setup &amp; Betrieb</span>
+    </span>
+  </div>
+  <div class="tile-desc">Wie oc8 als Fork mit eigenem qmed-Branch aufgesetzt ist, lokal unter Colima läuft und wie Upstream-Updates hereinkommen.</div>
+  <div class="tile-foot"><code>qmed/specs/2026-09-19-setup-fork-und-lokaler-betrieb-design.html</code><span>·</span><span>&nbsp;</span></div>
+</a>
+  </div>
+</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- =========================================================== -->
+  <section class="card">
+    <h2>Wie lege ich eine neue Spec an?</h2>
+    <div class="body">
+      <ol>
+        <li>
+          Datei anlegen im Spec-Ordner als <code>&lt;name&gt;.html</code> oder im
+          passenden Modul-Unterordner.
+        </li>
+        <li>
+          Skelett kopieren aus <code>_template.html</code> — CSS-Link und Header-Block sind
+          bereits korrekt eingebunden.
+        </li>
+        <li>
+          Inhalt in Karten (<code>section.card</code>) gliedern: Ziel, Datenmodell, UI-Mockup,
+          Edge-Cases, Tests, Deployment-Notiz.
+        </li>
+        <li>
+          <code>#spec-meta</code>-Block (JSON) ausfüllen: <code>titel</code>, <code>modul</code>,
+          <code>status</code>, <code>datum</code>, <code>beschreibung</code>.
+        </li>
+        <li>
+          <strong>Index wird automatisch generiert</strong> — <code>index.html</code> nie von
+          Hand editieren; der pre-commit-Hook regeneriert ihn beim nächsten Commit.
+        </li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- =========================================================== -->
+  <section class="card">
+    <h2>Was gehört nicht in dieses Wiki?</h2>
+    <div class="body">
+      <table>
+        <thead>
+          <tr><th>Artefakt</th><th>Wohin stattdessen</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Implementations-<strong>Pläne</strong> (mehrphasige Tasks)</td>
+            <td><code>thoughts/shared/plans/</code> (Markdown)</td>
+          </tr>
+          <tr>
+            <td><strong>Handoffs</strong> zwischen Sessions</td>
+            <td><code>thoughts/shared/handoffs/</code> (Markdown)</td>
+          </tr>
+          <tr>
+            <td>Endanwender-Doku &amp; Technik-Doku</td>
+            <td>Doku-Wiki (aus Markdown unter <code>docs/</code> generiert)</td>
+          </tr>
+          <tr>
+            <td>Code-Konventionen für Claude</td>
+            <td><code>CLAUDE.md</code> (Projekt-Root)</td>
+          </tr>
+        </tbody>
+      </table>
+      <p>
+        Specs in diesem Wiki beantworten <em>was und warum</em> ein Modul so funktioniert,
+        nicht <em>wie</em> es gerade umgebaut wird.
+      </p>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  Zentrales Spec-Wiki · Stand 2026-09-19 ·
+  Neue Specs hier verlinken, sonst existieren sie nicht.
+</footer>
+
+</body>
+</html>

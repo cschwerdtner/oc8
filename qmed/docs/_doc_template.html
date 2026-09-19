@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<!--
+  GENERIERT von scripts/doc_wiki.py aus der gleichnamigen .md-Datei.
+  NICHT von Hand editieren — Änderungen am Inhalt in der .md vornehmen,
+  dann `python3 scripts/doc_wiki.py build` (bzw. pre-commit-Hook) laufen lassen.
+  Die .md bleibt die Quelle; hier ist sie base64-UTF8 eingebettet (#doc-source)
+  und wird beim Öffnen von doc.js mit marked.js gerendert (file://-tauglich).
+-->
+<html lang="de">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>{{title}} — {{project}} Doku</title>
+<link rel="stylesheet" href="{{assets}}/spec.css" />
+<link rel="stylesheet" href="{{assets}}/hljs-theme.css" />
+<link rel="stylesheet" href="{{assets}}/doc.css" />
+</head>
+<body data-spec-key="{{key}}">
+
+<header class="page">
+  <div class="inner">
+    <a class="back" href="{{back}}">← Doku-Wiki</a>
+    <h1>{{title}}</h1>
+    <p>{{desc}}</p>
+    <div class="meta">
+      <span><strong>Datei:</strong> <code>{{path}}</code></span>
+      <span><strong>Kategorie:</strong> {{category}}</span>
+      <span><strong>Stand:</strong> <!--STAMP-->{{stamp}}<!--/STAMP--></span>
+    </div>
+  </div>
+</header>
+
+<main class="doc-main">
+  <article class="card full">
+    <div class="body markdown-body" id="doc-content">
+      <p class="empty">Markdown wird gerendert … (JavaScript aktivieren)</p>
+    </div>
+  </article>
+</main>
+
+<footer>
+  Quelle: <code>{{path}}</code> · Generiert aus Markdown ·
+  Zurück zum <a href="{{back}}">Doku-Wiki</a>.
+</footer>
+
+<!-- Markdown-Quelle, base64-UTF8 eingebettet (1:1 aus der .md) -->
+<script type="text/markdown" id="doc-source" data-encoding="base64">{{md_b64}}</script>
+
+<script src="{{assets}}/marked.min.js" defer></script>
+<script src="{{assets}}/highlight.min.js" defer></script>
+<script src="{{assets}}/doc.js" defer></script>
+
+</body>
+</html>

@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<!-- GENERIERT von scripts/doc_wiki.py — nicht von Hand editieren. -->
+<html lang="de">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>oc8 (Q-MED) — Doku-Wiki</title>
+<link rel="stylesheet" href="assets/spec.css" />
+<link rel="stylesheet" href="assets/doc.css" />
+<script src="assets/doc.js" defer></script>
+</head>
+<body>
+
+<header class="page">
+  <div class="inner">
+    <nav class="wiki-switch" aria-label="Wiki wechseln">
+      <span class="active">Doku-Wiki</span>
+      <a href="../specs/index.html">→ Spec-Wiki</a>
+    </nav>
+    <h1>oc8 (Q-MED) · Doku-Wiki</h1>
+    <p>
+      Die gesamte Projekt-Dokumentation als lesbares HTML — gerendert aus den
+      Markdown-Quellen unter <code>docs/</code>. Markdown bleibt die Quelle (gut für
+      Tools &amp; Agents), diese Seiten sind die menschenfreundliche Ansicht.
+    </p>
+    <div class="meta">
+      <span><strong>Repo:</strong> oc8 (Q-MED)</span>
+      <span><strong>Index:</strong> <code>docs/index.html</code></span>
+      <span><strong>Stand:</strong> 2026-09-19</span>
+      <span><strong>Quelle:</strong> Markdown unter <code>docs/</code></span>
+    </div>
+  </div>
+</header>
+
+<main>
+
+  <!-- =========================================================== -->
+  <section class="card full">
+    <h2>Dokumentation</h2>
+    <div class="body">
+      <p class="doc-intro">
+        Jede Kachel öffnet eine Doku-Seite im selben Q-MED-Look wie das Spec-Wiki.
+        Sortierbar nach Bereich oder Aktualität. Inhalt bearbeiten heißt: die
+        <code>.md</code>-Datei ändern — der Index und die HTML-Seiten werden vom
+        pre-commit-Hook neu generiert.
+      </p>
+      <div class="sort-bar" id="spec-sort" role="group" aria-label="Sortierung">
+        <span class="sort-label">Sortieren:</span>
+        <button type="button" data-sort="module" aria-pressed="true">Nach Bereich</button>
+        <button type="button" data-sort="datum-desc" aria-pressed="false">Neueste zuerst</button>
+        <button type="button" data-sort="datum-asc" aria-pressed="false">Älteste zuerst</button>
+      </div>
+      <div class="modules-host">
+<div class="module-group">
+  <h3>Allgemein</h3>
+  <div class="specs-grid">
+<a class="spec-tile" href="README.html" data-datum="2026-09-19" data-mtime="1789806011" data-modul="Allgemein" data-titel="oc8 – q-med-arbeitsstand">
+  <div class="tile-head">
+    <span class="tile-title">oc8 – Q-MED-Arbeitsstand</span>
+    <span class="tile-chips">
+      <span class="badge date" title="Zuletzt geändert">2026-09-19</span>
+      <span class="badge modul" title="Bereich">Allgemein</span>
+    </span>
+  </div>
+  <div class="tile-desc">Fork von oc8-ai/oc8, eigene Arbeit auf Branch qmed.</div>
+  <div class="tile-foot"><code>qmed/docs/README.md</code></div>
+</a>
+  </div>
+</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- =========================================================== -->
+  <section class="card full">
+    <h2>Wie pflege ich die Doku?</h2>
+    <div class="body">
+      <ol>
+        <li>
+          Markdown bearbeiten oder neu anlegen unter <code>docs/&lt;bereich&gt;/&lt;name&gt;.md</code>
+          (z.&nbsp;B. <code>docs/02_technical/…</code>).
+        </li>
+        <li>
+          Erste <code># Überschrift</code> wird zum Kachel-Titel, der erste Absatz zur
+          Kurzbeschreibung — keine Metadaten von Hand nötig.
+        </li>
+        <li>
+          Welche Dateien aufgenommen werden und in welchem Bereich sie landen, steht in
+          <code>.doc-wiki.json</code> (Bereich = <code>categories[]</code>).
+        </li>
+        <li>
+          <strong>HTML &amp; Index werden generiert</strong> — der pre-commit-Hook ruft
+          <code>scripts/doc_wiki.py build</code>; <code>index.html</code> und die Seiten-HTMLs
+          nie von Hand editieren.
+        </li>
+      </ol>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  Datei: <code>docs/index.html</code> · Doku-Wiki (aus Markdown generiert) ·
+  Stand 2026-09-19 · Quelle bleibt Markdown unter <code>docs/</code>.
+</footer>
+
+</body>
+</html>

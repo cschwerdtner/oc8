@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>oc8: Fork &amp; lokaler Betrieb — Design</title>
+
+<!-- Single Source für die Index-Generierung -->
+<script type="application/json" id="spec-meta">
+{
+  "titel": "Fork & lokaler Betrieb",
+  "modul": "Setup & Betrieb",
+  "status": "umgesetzt",
+  "datum": "2026-09-19",
+  "beschreibung": "Wie oc8 als Fork mit eigenem qmed-Branch aufgesetzt ist, lokal unter Colima läuft und wie Upstream-Updates hereinkommen.",
+  "footnote": ""
+}
+</script>
+
+<link rel="stylesheet" href="assets/spec.css" />
+</head>
+<body data-spec-key="2026-09-19-setup-fork-und-lokaler-betrieb-design">
+
+<header class="page">
+  <div class="inner">
+    <a class="back" href="index.html">← Spec-Wiki</a>
+    <h1>oc8: Fork &amp; lokaler Betrieb</h1>
+    <p>Aufbau des Forks, lokale Laufzeitumgebung und Update-Weg von Upstream.</p>
+    <div class="meta">
+      <span><strong>Datei:</strong> <code>qmed/specs/2026-09-19-setup-fork-und-lokaler-betrieb-design.html</code></span>
+      <span><strong>Status:</strong> umgesetzt</span>
+      <span><strong>Quelle:</strong> Session „oc8"</span>
+    </div>
+  </div>
+</header>
+
+<main>
+
+  <!-- ===================================================================== -->
+  <section class="card full">
+    <h2>1 · Ziel &amp; Kontext</h2>
+    <div class="body">
+      <p><a href="https://oc8.ai">oc8</a> ist ein Open-Source-Tool zum Orchestrieren von Agents (LGPL-3.0,
+      <code>oc8-ai/oc8</code>). Wir wollen es lokal betreiben und <strong>gezielt erweitern</strong>, ohne den
+      Anschluss an Upstream-Updates zu verlieren.</p>
+    </div>
+  </section>
+
+  <!-- ===================================================================== -->
+  <section class="card">
+    <h2>2 · Lösung</h2>
+    <div class="body">
+      <ul>
+        <li><strong>Repo:</strong> Fork <code>cschwerdtner/oc8</code>, lokal unter <code>~/claude/oc8</code>.
+          Remotes: <code>origin</code> = Fork, <code>upstream</code> = <code>oc8-ai/oc8</code>.</li>
+        <li><strong>Branches:</strong> <code>main</code> bleibt identisch mit Upstream, eigene Arbeit auf <code>qmed</code>.
+          Update: <code>git fetch upstream &amp;&amp; git checkout main &amp;&amp; git merge --ff-only upstream/main &amp;&amp; git checkout qmed &amp;&amp; git merge main</code>.</li>
+        <li><strong>Eigene Dateien nur unter <code>qmed/</code> und <code>thoughts/</code></strong> (plus <code>.githooks/</code>,
+          <code>.spec-wiki.json</code>, <code>.doc-wiki.json</code>). Upstream-<code>docs/</code> und <code>scripts/</code> bleiben unberührt.</li>
+        <li><strong>Laufzeit:</strong> Colima (kein Docker Desktop), Profil <code>default</code> mit 6 CPU / 8 GB.
+          Start: <code>colima start</code>, dann <code>./scripts/quickstart.sh</code> im Repo.</li>
+        <li><strong>Modus:</strong> Dev (<code>OC8_QUICKSTART_MODE=dev</code>): Seed-Daten + Login ohne Passwort,
+          <strong>nur localhost</strong>. Secrets liegen in <code>.env</code> (gitignored).</li>
+        <li><strong>Localhost-Bindung:</strong> in <code>.env</code> <code>OC8_HTTP_PORT=127.0.0.1:80</code> und
+          <code>OC8_HTTPS_PORT=127.0.0.1:443</code>. Ohne das veröffentlicht Colima Port 80/443 im ganzen LAN.</li>
+        <li><strong>Neustart im Dev-Modus:</strong> <code>docker compose -f docker-compose.yml -f docker-compose.dev.yml up -d</code>
+          (ein nacktes <code>docker compose up</code> startet <em>ohne</em> Dev-Overlay).</li>
+        <li class="decision" data-d="dec-localhost-bind">
+          <input type="checkbox" class="d-check" aria-label="Entscheidung als gesichtet markieren" />
+          <div class="d-body">
+            <div class="d-head">
+              <span class="d-date">2026-09-19</span>
+              <span class="d-title">Caddy nur auf 127.0.0.1 binden (über <code>.env</code>)</span>
+            </div>
+            <p class="d-why">Nach dem ersten Start war der Dev-Login ohne Passwort unter 192.168.2.65 aus dem LAN erreichbar, weil Colimas Portforwarder auf <code>*:80</code> bindet. Das Upstream-Compose liest <code>OC8_HTTP_PORT</code>/<code>OC8_HTTPS_PORT</code>, also reicht <code>127.0.0.1:80</code> in <code>.env</code> und Upstream-Dateien bleiben unverändert. Geprüft: LAN-IPv4 und öffentliche IPv6-Adressen liefern keine Antwort, 127.0.0.1 und ::1 liefern 200.</p>
+            <p class="d-src">Quelle: Session „oc8"</p>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ===================================================================== -->
+  <section class="card full">
+    <h2>Entscheidungs-Log · committet — der Record</h2>
+    <div class="body">
+      <p style="color:var(--muted);font-size:12px;margin-top:0">
+        Von Claude gepflegt. Entscheidungen aus dieser und künftigen Sessions stehen hier
+        dauerhaft (in Git), nicht im Browser. Das Häkchen links ist dein persönlicher
+        „gesichtet"-Marker (nur dieser Browser).
+      </p>
+      <ul class="decisions">
+        <li class="decision" data-d="dec-fork">
+          <input type="checkbox" class="d-check" aria-label="Entscheidung als gesichtet markieren" />
+          <div class="d-body">
+            <div class="d-head">
+              <span class="d-date">2026-09-19</span>
+              <span class="d-title">Fork statt reinem Clone, eigene Arbeit auf Branch <code>qmed</code></span>
+            </div>
+            <p class="d-why">Erweiterungen sind geplant. Mit dem Fork sind sie versioniert und gesichert, <code>main</code> bleibt sauber und Upstream-Updates lassen sich mergen.</p>
+            <p class="d-src">Quelle: Session „oc8"</p>
+          </div>
+        </li>
+        <li class="decision" data-d="dec-qmed-ordner">
+          <input type="checkbox" class="d-check" aria-label="Entscheidung als gesichtet markieren" />
+          <div class="d-body">
+            <div class="d-head">
+              <span class="d-date">2026-09-19</span>
+              <span class="d-title">Eigene Doku/Tooling unter <code>qmed/</code> statt <code>docs/</code> und <code>scripts/</code></span>
+            </div>
+            <p class="d-why">Upstream nutzt <code>docs/</code> und <code>scripts/</code> selbst. Ein eigener Top-Level-Ordner hält Merges von Upstream konfliktfrei. Der Kit-Pre-Commit-Hook wurde dafür auf <code>qmed/scripts</code> und <code>qmed/docs</code> umgebogen.</p>
+            <p class="d-src">Quelle: Session „oc8"</p>
+          </div>
+        </li>
+        <li class="decision" data-d="dec-colima">
+          <input type="checkbox" class="d-check" aria-label="Entscheidung als gesichtet markieren" />
+          <div class="d-body">
+            <div class="d-head">
+              <span class="d-date">2026-09-19</span>
+              <span class="d-title">Colima statt Docker Desktop, 6 CPU / 8 GB</span>
+            </div>
+            <p class="d-why">Docker Desktop ist nicht installiert, Colima schon. Die Standardwerte von 2 CPU / 2 GB reichen für Postgres, MinIO, Redis, das Backend und den Frontend-Build nicht.</p>
+            <p class="d-src">Quelle: Session „oc8"</p>
+          </div>
+        </li>
+        <li class="decision" data-d="dec-dev-modus">
+          <input type="checkbox" class="d-check" aria-label="Entscheidung als gesichtet markieren" />
+          <div class="d-body">
+            <div class="d-head">
+              <span class="d-date">2026-09-19</span>
+              <span class="d-title">Quickstart im Dev-Modus</span>
+            </div>
+            <p class="d-why">Mit Seed-Daten und ohne Login-Hürde geht das Entwickeln am schnellsten. Nur auf localhost, nie ins Netz exponieren. Für produktive Nutzung später Community-Modus.</p>
+            <p class="d-src">Quelle: Session „oc8"</p>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </section>
+
+</main>
+
+<!-- Sticky-Notiz-Button + Drawer (localStorage, nicht committet) -->
+<button class="note-fab" id="note-fab" aria-label="Notizen öffnen" aria-expanded="false" aria-controls="note-drawer">
+  ✎ Notizen
+</button>
+
+<aside class="note-drawer" id="note-drawer" aria-label="Persönliche Notizen" aria-hidden="true">
+  <header>
+    <strong>Persönliche Notizen</strong>
+    <button class="close" id="note-close" aria-label="Notizen schließen">×</button>
+  </header>
+  <div class="content">
+    <p class="hint">Nur dieser Browser (localStorage) — wird <strong>nicht</strong> committet.</p>
+    <textarea data-k="freitext" placeholder="Gedanken-Kritzeleien während du liest…"></textarea>
+
+    <h4>Entscheidung einreichen</h4>
+    <div class="mini">
+      <input type="text" data-k="d-title" placeholder="Entscheidung (Titel)" />
+      <input type="text" data-k="d-why" placeholder="Warum?" />
+    </div>
+    <button class="act" id="copy-decision">→ Markdown kopieren</button>
+    <span class="hint" id="copy-feedback"></span>
+    <p class="hint">Kopieren, mir im Chat geben → ich schreibe es ins committete Log.</p>
+  </div>
+</aside>
+
+<footer>
+  Datei: <code>qmed/specs/2026-09-19-setup-fork-und-lokaler-betrieb-design.html</code> ·
+  <!--STAMP-->Stand: 2026-09-19 · 3364519<!--/STAMP--> ·
+  Zurück zum <a href="index.html">Spec-Wiki</a>.
+</footer>
+
+<script src="assets/spec.js" defer></script>
+
+</body>
+</html>

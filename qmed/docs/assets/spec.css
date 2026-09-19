@@ -1,0 +1,452 @@
+/* spec.css — geteiltes Stylesheet für das lebendige HTML-Spec-Wiki
+   Quelle: extrahiert aus 2026-05-22-lebendiges-html-spec-wiki-design.html
+   + Index-spezifische Klassen aus index.html (spec-tile, module-group, convention, …)
+   Bei Überschneidungen: Design-Spec-Variante hat Vorrang.
+*/
+
+:root {
+  --bg: #f6f7f9;
+  --card: #ffffff;
+  --ink: #1a1d22;
+  --ink-soft: #545962;
+  --muted: #8a8f97;
+  --border: #e3e5e9;
+  --accent: #2563eb;
+  --accent-soft: #eff4ff;
+  --good: #16a34a;
+  --good-soft: #f0fdf4;
+  --warn: #d97706;
+  --warn-soft: #fffbeb;
+  --bad: #dc2626;
+  --bad-soft: #fef2f2;
+  --frozen: #6b7280;
+  --shadow: 0 1px 2px rgba(0,0,0,.04), 0 4px 12px rgba(0,0,0,.04);
+  --radius: 10px;
+  --max-width: 1100px;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+               "Helvetica Neue", Arial, sans-serif;
+  line-height: 1.55;
+  font-size: 14px;
+  -webkit-font-smoothing: antialiased;
+  /* Safety-Net gegen versehentlichen horizontalen Overflow durch lange
+     Inhalte (z. B. Pfade in <code>).
+     WICHTIG: `overflow-x: clip` — NICHT `hidden`. `hidden` zwingt nach
+     CSS-Regel `overflow-y` still auf `auto`, wodurch der <body> selbst zum
+     Scroll-Container wird (Höhe = Inhalt). Auf iOS-Safari lässt sich ein
+     body-als-Scroll-Container per Touch oft NICHT scrollen — die Seite
+     „klebt". `clip` kappt den horizontalen Overflow genauso, lässt aber
+     `overflow-y: visible`, sodass Viewport/Root scrollt (iOS-tauglich).
+     `overflow: clip` ist ab iOS-Safari 16 unterstützt. */
+  overflow-x: clip;
+}
+
+/* ---------- Header ---------- */
+header.page {
+  background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+  color: #f1f5f9;
+  padding: 28px 24px 26px;
+}
+header.page .inner { max-width: var(--max-width); margin: 0 auto; position: relative; }
+
+/* ---------- Q-MED-Logo (von spec.js injiziert) ----------
+   Dunkelblaues Logo auf dunklem Header → weißer Chip für Kontrast. */
+header.page .brand-logo {
+  position: absolute; top: 0; right: 0;
+  background: #fff; border-radius: 8px; padding: 6px 10px;
+  box-shadow: 0 1px 3px rgba(0,0,0,.35);
+}
+header.page .brand-logo img { height: 22px; display: block; }
+@media (max-width: 640px) {
+  header.page .brand-logo { position: static; width: max-content; margin-bottom: 12px; }
+}
+header.page .back {
+  display: inline-flex; align-items: center; gap: 6px;
+  color: #93c5fd; font-size: 12.5px; text-decoration: none;
+  margin-bottom: 14px; opacity: .9;
+}
+header.page .back:hover { opacity: 1; text-decoration: underline; }
+header.page h1 { margin: 0 0 8px; font-size: 25px; letter-spacing: -0.01em; }
+header.page p { margin: 0; color: #94a3b8; font-size: 13px; max-width: 760px; }
+header.page .meta {
+  display: flex; gap: 18px; flex-wrap: wrap;
+  margin-top: 16px; font-size: 12px; color: #cbd5e1;
+}
+header.page .meta strong { color: #f1f5f9; }
+
+/* ---------- Header-KONTRAST-FIX ----------
+   Der globale code-Stil (heller Chip) ist im dunklen Header unlesbar
+   (hellgrau auf hellgrau). Im Header eigener, dunkler Chip + helle Schrift. */
+header.page code, header.page .meta code {
+  background: rgba(255,255,255,.12);
+  border: 1px solid rgba(255,255,255,.18);
+  color: #e2e8f0;
+}
+
+/* ---------- Layout ---------- */
+main {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 24px;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 18px;
+}
+@media (min-width: 900px) {
+  main { grid-template-columns: 1fr 1fr; }
+  section.full { grid-column: 1 / -1; }
+}
+
+section.card {
+  background: var(--card);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  border: 1px solid var(--border);
+  overflow: hidden;
+}
+section.card > h2 {
+  margin: 0;
+  padding: 14px 18px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  background: #fafbfc;
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; gap: 10px;
+}
+section.card > .body { padding: 16px 18px 18px; }
+section.card > .body > :first-child { margin-top: 0; }
+section.card > .body > :last-child { margin-bottom: 0; }
+
+h3 { font-size: 14px; margin: 18px 0 6px; }
+p { margin: 8px 0; }
+ul, ol { margin: 8px 0; padding-left: 22px; }
+li { margin: 4px 0; }
+code {
+  background: #f3f4f6;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 1px 5px;
+  font-size: 12px;
+  font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+}
+pre {
+  background: #0f172a; color: #e2e8f0;
+  border-radius: 8px; padding: 14px 16px; overflow-x: auto;
+  font-size: 12.5px; line-height: 1.5;
+  font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+}
+pre code { background: none; border: 0; color: inherit; padding: 0; font-size: inherit; }
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+.badge {
+  display: inline-block; padding: 2px 8px; border-radius: 999px;
+  font-size: 11px; font-weight: 500;
+  background: var(--accent-soft); color: var(--accent); border: 1px solid #dbeafe;
+}
+.badge.good { background: var(--good-soft); color: var(--good); border-color: #bbf7d0; }
+.badge.warn { background: var(--warn-soft); color: var(--warn); border-color: #fde68a; }
+.badge.bad  { background: var(--bad-soft);  color: var(--bad);  border-color: #fecaca; }
+.badge.frozen { background: #f3f4f6; color: var(--frozen); border-color: #e5e7eb; }
+
+table { border-collapse: collapse; width: 100%; font-size: 13px; margin: 8px 0; }
+th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--border); vertical-align: top; }
+th { font-weight: 600; color: var(--ink-soft); font-size: 12px; text-transform: uppercase; letter-spacing: 0.04em; background: #fafbfc; }
+tr:last-child td { border-bottom: 0; }
+
+.note { background: var(--accent-soft); border: 1px solid #dbeafe; border-radius: 8px; padding: 10px 12px; font-size: 13px; }
+.note.warn { background: var(--warn-soft); border-color: #fde68a; }
+.note.good { background: var(--good-soft); border-color: #bbf7d0; }
+
+/* ---------- Committetes Entscheidungs-Log (der Record) ---------- */
+ul.decisions { list-style: none; padding: 0; margin: 0; }
+ul.decisions > li {
+  border-bottom: 1px solid var(--border);
+  padding: 12px 0;
+  display: flex; gap: 10px; align-items: flex-start;
+}
+ul.decisions > li:last-child { border-bottom: 0; }
+.decision .d-check { margin-top: 3px; flex: 0 0 auto; width: 15px; height: 15px; cursor: pointer; }
+.decision .d-body { flex: 1; min-width: 0; }
+.decision .d-head { display: flex; gap: 10px; align-items: baseline; flex-wrap: wrap; }
+.decision .d-date { font-feature-settings: "tnum"; color: var(--muted); font-size: 12px; }
+.decision .d-title { font-weight: 600; }
+.decision.checked .d-title { color: var(--good); }
+.decision .d-why { color: var(--ink-soft); margin: 4px 0 0; }
+.decision .d-src { color: var(--muted); font-size: 11.5px; margin-top: 3px; }
+
+/* ---------- Sticky-Notiz-Button + Drawer (localStorage, nicht committet) ---------- */
+.note-fab {
+  position: fixed; right: 20px; bottom: 20px; z-index: 50;
+  display: inline-flex; align-items: center; gap: 7px;
+  background: var(--accent); color: #fff; border: 0;
+  padding: 11px 16px; border-radius: 999px;
+  font-size: 13px; font-weight: 500; cursor: pointer;
+  box-shadow: 0 4px 14px rgba(37,99,235,.35);
+}
+.note-fab:hover { background: #1d4ed8; }
+.note-drawer {
+  position: fixed; top: 0; right: 0; bottom: 0; z-index: 60;
+  width: min(380px, 92vw);
+  background: var(--card); border-left: 1px solid var(--border);
+  box-shadow: -8px 0 28px rgba(0,0,0,.12);
+  transform: translateX(105%); transition: transform .22s ease;
+  display: flex; flex-direction: column;
+}
+.note-drawer.open { transform: translateX(0); }
+.note-drawer > header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 14px 16px; border-bottom: 1px solid var(--border); background: #fafbfc;
+}
+.note-drawer > header strong { font-size: 13px; }
+.note-drawer .close { border: 0; background: none; font-size: 22px; line-height: 1; cursor: pointer; color: var(--ink-soft); }
+.note-drawer .close:hover { color: var(--ink); }
+.note-drawer .content { padding: 14px 16px; overflow-y: auto; }
+.note-drawer h4 { margin: 14px 0 6px; font-size: 11px; text-transform: uppercase; letter-spacing: .05em; color: var(--ink-soft); }
+.note-drawer textarea {
+  width: 100%; min-height: 150px; resize: vertical;
+  border: 1px solid var(--border); border-radius: 8px; padding: 9px 11px;
+  font: inherit; font-size: 13px;
+}
+.note-drawer .mini { display: grid; gap: 6px; margin: 6px 0 8px; }
+.note-drawer .mini input {
+  border: 1px solid var(--border); border-radius: 6px; padding: 7px 10px; font: inherit; font-size: 13px;
+}
+.note-drawer button.act {
+  border: 1px solid var(--border); background: var(--card); color: var(--ink);
+  padding: 8px 13px; border-radius: 7px; font-size: 12.5px; cursor: pointer;
+}
+.note-drawer button.act:hover { background: var(--accent-soft); border-color: var(--accent); }
+.note-drawer .hint { color: var(--muted); font-size: 11.5px; margin-top: 4px; }
+
+footer {
+  max-width: var(--max-width);
+  margin: 12px auto 40px;
+  padding: 0 24px;
+  color: var(--muted);
+  font-size: 12px;
+}
+footer code { font-size: 11.5px; }
+
+@media print {
+  .note-fab, .note-drawer, header.page .back { display: none !important; }
+}
+
+/* ---------- Spec-Karten-Grid (Index-spezifisch) ---------- */
+.specs-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+}
+@media (min-width: 700px) {
+  .specs-grid { grid-template-columns: 1fr 1fr; }
+}
+
+.spec-tile {
+  display: block;
+  padding: 14px 16px;
+  background: #ffffff;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  color: inherit;
+  text-decoration: none;
+  transition: transform 0.08s ease, box-shadow 0.08s ease, border-color 0.08s ease;
+  /* min-width: 0 ist kritisch in CSS-Grid-Kindern, sonst dehnt langer
+     Inhalt (code-Pfade) das Tile breiter als die Grid-Spalte. */
+  min-width: 0;
+}
+.spec-tile:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--shadow);
+  border-color: #c7d2fe;
+  text-decoration: none;
+}
+.spec-tile .tile-head {
+  display: flex; align-items: flex-start; justify-content: space-between;
+  gap: 10px; margin-bottom: 6px;
+  min-width: 0;
+}
+.spec-tile .tile-title {
+  font-weight: 600; font-size: 14px; color: var(--ink);
+  /* Auch lange Titel sollen brechen, statt das Tile horizontal zu sprengen. */
+  min-width: 0;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+  flex: 1 1 auto;
+}
+.spec-tile .tile-chips {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  align-items: center;
+  flex: 0 0 auto;
+  justify-content: flex-end;
+  max-width: 55%;
+}
+.spec-tile .tile-desc {
+  font-size: 12.5px; color: var(--ink-soft); margin: 4px 0 8px;
+  /* Beschreibung kann sehr lang werden — bei sehr schmalem Viewport brechen. */
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+.spec-tile .tile-foot {
+  display: flex; gap: 10px; flex-wrap: wrap;
+  font-size: 11.5px; color: var(--muted);
+  min-width: 0;
+}
+.spec-tile .tile-foot code {
+  font-size: 11px;
+  /* Lange Pfade dürfen nicht horizontal overflowen — speziell auf iPhone
+     (Viewport ~375px). overflow-wrap: anywhere bricht auch an Stellen
+     ohne natürliche Trennzeichen (slash, dot). */
+  overflow-wrap: anywhere;
+  word-break: break-all;
+  min-width: 0;
+  max-width: 100%;
+}
+
+/* Datum- und Modul-Chip (zusätzlich zum Status-Badge) */
+.badge.date {
+  background: #f3f4f6;
+  color: var(--ink-soft);
+  border-color: var(--border);
+  font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  font-feature-settings: "tnum";
+  font-weight: 500;
+  white-space: nowrap;
+}
+.badge.modul {
+  background: #fafbfc;
+  color: var(--muted);
+  border-color: var(--border);
+  font-weight: 500;
+  /* Modul-Chip nur sichtbar im Datum-Sort-Modus, sonst redundant zur Gruppen-h3. */
+  display: none;
+}
+.specs-grid-flat .badge.modul { display: inline-block; }
+
+.module-group {
+  margin-bottom: 6px;
+}
+.module-group h3 {
+  margin: 6px 0 10px;
+  display: flex; align-items: center; gap: 8px;
+  color: var(--ink-soft);
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-weight: 600;
+}
+.module-group + .module-group { margin-top: 18px; }
+
+/* ---------- Konventions-Karten (Index-spezifisch) ---------- */
+.convention {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 10px;
+}
+@media (min-width: 700px) {
+  .convention { grid-template-columns: 1fr 1fr; }
+}
+.conv-item {
+  padding: 12px 14px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: #fafbfc;
+}
+.conv-item .title { font-weight: 600; font-size: 13px; margin-bottom: 4px; }
+.conv-item .why { font-size: 12.5px; color: var(--ink-soft); }
+
+.empty {
+  color: var(--muted);
+  font-style: italic;
+  font-size: 12.5px;
+}
+
+/* ---------- Sortier-Toolbar (Index-spezifisch) ---------- */
+.sort-bar {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  flex-wrap: wrap;
+  margin: 0 0 14px;
+  font-size: 12.5px;
+}
+.sort-bar .sort-label {
+  color: var(--ink-soft);
+  font-weight: 500;
+  margin-right: 4px;
+}
+.sort-bar button {
+  border: 1px solid var(--border);
+  background: var(--card);
+  color: var(--ink-soft);
+  border-radius: 6px;
+  padding: 5px 11px;
+  font-size: 12.5px;
+  font-family: inherit;
+  cursor: pointer;
+  transition: background 0.08s ease, color 0.08s ease, border-color 0.08s ease;
+}
+.sort-bar button:hover {
+  background: var(--accent-soft);
+  color: var(--accent);
+  border-color: #c7d2fe;
+}
+.sort-bar button[aria-pressed="true"] {
+  background: var(--accent-soft);
+  color: var(--accent);
+  border-color: var(--accent);
+  font-weight: 600;
+}
+
+/* ---------- Wiki-Umschalter (Spec-Wiki ↔ Doku-Wiki) ----------
+   Liegt im dunklen Header, kleine Pills. Identisch auf beiden Index-Seiten,
+   daher zentral in spec.css (wird auch ins Doku-Wiki kopiert). */
+header.page .wiki-switch {
+  display: inline-flex; gap: 6px; align-items: center;
+  margin-bottom: 14px;
+}
+header.page .wiki-switch a,
+header.page .wiki-switch span.active {
+  font-size: 12px; line-height: 1;
+  padding: 6px 12px; border-radius: 999px;
+  text-decoration: none;
+  border: 1px solid rgba(255,255,255,.18);
+}
+header.page .wiki-switch span.active {
+  background: #fff; color: #0f172a; font-weight: 600;
+  border-color: #fff;
+}
+header.page .wiki-switch a {
+  color: #cbd5e1; background: rgba(255,255,255,.06);
+}
+header.page .wiki-switch a:hover {
+  color: #fff; background: rgba(255,255,255,.14);
+  border-color: rgba(255,255,255,.3); text-decoration: none;
+}
+
+/* ---------- Callout-Box (Hinweis / Warnung / Gefahr) ----------
+   Hervorgehobener Absatz innerhalb einer Karte. Default = Akzent (Hinweis),
+   .warn = Warnung (amber), .danger = Gefahr/Footgun (rot). */
+.callout {
+  margin: 14px 0;
+  padding: 12px 14px;
+  border-left: 3px solid var(--accent);
+  background: var(--accent-soft);
+  border-radius: 6px;
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--ink-soft);
+}
+.callout strong { color: var(--ink); }
+.callout.warn   { border-left-color: var(--warn); background: var(--warn-soft); }
+.callout.danger { border-left-color: var(--bad);  background: var(--bad-soft); }

@@ -1,0 +1,8 @@
+{ "project": "oc8 (Q-MED)",
+  "index": "qmed/docs/index.html",
+  "index_template": "qmed/docs/index.template.html",
+  "page_template": "qmed/docs/_doc_template.html",
+  "assets": "qmed/docs/assets",
+  "shared_assets_src": "qmed/specs/assets",
+  "spec_index_href": "../specs/index.html",
+  "categories": [ { "name": "Allgemein", "scan": ["qmed/docs"] } ] }
